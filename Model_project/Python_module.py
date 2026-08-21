@@ -45,7 +45,7 @@ class ConsumerClass:
 
     def setup(self):
         """ set the baseline parameters -- the "complements" calibration """
-
+        
         par = self.par = SimpleNamespace()
 
         # a. preference weights (both between 0 and 1)
