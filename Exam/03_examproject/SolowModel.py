@@ -143,10 +143,20 @@ class SolowModelClass:
 
         return par.s_bar + (s0-par.s_bar)*phi**t
 
-    # the discounted sum of log(c_t)
+        # the discounted sum of log(c_t)
     def welfare(self,c):
-        raise NotImplementedError
+        """ W = sum_{t=0}^{T-1} beta**t * log(c_t) """
+
+        par = self.par
+        t = np.arange(par.T)
+
+        return np.sum(par.beta**t * np.log(c))
 
     # welfare of the savings rule (s0,phi)
     def evaluate(self,s0,phi):
-        raise NotImplementedError
+        """ simulate the rule s_t = s_bar+(s0-s_bar)*phi**t from k0, and return its welfare """
+
+        s_t = self.s_path(s0,phi)
+        sim = self.simulate(s_t)
+
+        return self.welfare(sim.c)
