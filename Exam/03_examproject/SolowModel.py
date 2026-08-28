@@ -134,14 +134,15 @@ class SolowModelClass:
 
         return sim
 
-    # the savings path s_t = s_bar + (s0-s_bar)*phi**t
-    def s_path(self,s0,phi):
-        """ time-varying savings rate, s_t = s_bar + (s0-s_bar)*phi**t """
+    # the savings path s_t = s_inf + (s0-s_inf)*phi**t  (s_inf=None -> uses par.s_bar, as in eq. 6)
+    def s_path(self,s0,phi,s_inf=None):
+        """ time-varying savings rate, s_t = s_inf + (s0-s_inf)*phi**t """
 
         par = self.par
+        if s_inf is None: s_inf = par.s_bar
         t = np.arange(par.T)
 
-        return par.s_bar + (s0-par.s_bar)*phi**t
+        return s_inf + (s0-s_inf)*phi**t
 
         # the discounted sum of log(c_t)
     def welfare(self,c):
@@ -152,11 +153,11 @@ class SolowModelClass:
 
         return np.sum(par.beta**t * np.log(c))
 
-    # welfare of the savings rule (s0,phi)
-    def evaluate(self,s0,phi):
-        """ simulate the rule s_t = s_bar+(s0-s_bar)*phi**t from k0, and return its welfare """
+    # welfare of the savings rule (s0,phi[,s_inf])
+    def evaluate(self,s0,phi,s_inf=None):
+        """ simulate the rule s_t=s_inf+(s0-s_inf)*phi**t from k0, and return its welfare """
 
-        s_t = self.s_path(s0,phi)
+        s_t = self.s_path(s0,phi,s_inf)
         sim = self.simulate(s_t)
 
         return self.welfare(sim.c)
